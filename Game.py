@@ -154,11 +154,12 @@ class Game():
                     temp = temp + str(self.__convertNum(self.__getPos(y, x))) + "|"
                 else:
                     temp = temp + str(self.__convertNum(self.__getPos(y, x))) + "\n"
-            for i in range(1, self.gridSize+1):
-                if i != self.gridSize:
-                    temp = temp + "-|"
-                else:
-                    temp = temp + "-\n"
+            if x != self.gridSize:        
+                for i in range(1, self.gridSize+1):
+                    if i != self.gridSize:
+                        temp = temp + "-|"
+                    else:
+                        temp = temp + "-\n"
         return temp
 
     def __convertNum(self, num):
