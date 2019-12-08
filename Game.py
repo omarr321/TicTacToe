@@ -7,29 +7,46 @@ class Game():
         self.playerOne = player1
         self.playerTwo = player2
         self.gridSize = gridSize
+        self.maxTurn = int(gridSize) * int(gridSize)
+        self.currentTurn = 0;
 
     def run(self):
         while(True):
+            self.currentTurn = 0
+            draw = False
             self.gameBoard.reset()
             while(True):
                 print(self.__printGame())
                 player1In = self.__getInput(self.playerOne)
                 self.__setPos(x = player1In[0], y = player1In[1], token = -1)
 
+                self.currentTurn = self.currentTurn + 1
                 if(self.__checkWin() == True):
                     break
+                if(self.__fullBoard() == True):
+                    draw = True
+                    break
+
 
                 print(self.__printGame())
                 player2In = self.__getInput(self.playerTwo)
                 self.__setPos(x = player2In[0], y = player2In[1], token = 1)
 
+                self.currentTurn = self.currentTurn + 1
                 if(self.__checkWin() == True):
                     break
-        
-            winner = self.__getWinner()
+                if(self.__fullBoard() == True):
+                    draw = True
+                    break
+            
+            if draw == False:
+                winner = self.__getWinner()
 
-            print(self.__printGame())
-            print(str(winner) + " is the winner!")
+                print(self.__printGame())
+                print(str(winner) + " is the winner!")
+            else:
+                print(self.__printGame())
+                print("No one is the winner! It's a draw")
             while(True):
                 good = False
                 print("Do you want to play again(Y/N)?")
@@ -71,15 +88,15 @@ class Game():
                 total += self.gameBoard.getPos(k, i)
             if total == int(self.gridSize) * -1:
                 return True
-            if total == int(self.gridSize) * 13:
+            if total == int(self.gridSize) * 1:
                 return True
 
         total = 0
         for i in range(1, self.gridSize+1):
             total += self.gameBoard.getPos(i, i)
-        if total == -3:
+        if total == int(self.gridSize) * -1:
             return True
-        if total == 3:
+        if total == int(self.gridSize) * 1:
             return True
 
         total = 0
@@ -97,34 +114,34 @@ class Game():
             total = 0
             for j in range(1, self.gridSize+1):
                 total += self.gameBoard.getPos(i, j)
-            if total == -3:
+            if total == int(self.gridSize) * -1:
                 return str(self.playerOne)
-            if total == 3:
+            if total == int(self.gridSize) * 1:
                 return str(self.playerTwo)
 
             total = 0
             for k in range(1, self.gridSize+1):
                 total += self.gameBoard.getPos(k, i)
-            if total == -3:
+            if total == int(self.gridSize) * -1:
                 return str(self.playerOne)
-            if total == 3:
+            if total == int(self.gridSize) * 1:
                 return str(self.playerTwo)
 
         total = 0
         for i in range(1, self.gridSize+1):
             total += self.gameBoard.getPos(i, i)
-        if total == -3:
+        if total == int(self.gridSize) * -1:
                 return str(self.playerOne)
-        if total == 3:
+        if total == int(self.gridSize) * 1:
             return str(self.playerTwo)
 
         total = 0
         for i in range(1, self.gridSize+1):
             total += self.gameBoard.getPos(i, self.gridSize+1-i)
-        if total == -3:
+        if total == int(self.gridSize) * -1:
                 return str(self.playerOne)
-        if total == 3:
-            return str(self.playerTwo)  
+        if total == int(self.gridSize) * 1:
+            return str(self.playerTwo)
 
         return None
 
@@ -173,8 +190,12 @@ class Game():
         if str(self.gameBoard.getPos(x, y)) != "0":
             return True  
         return False
-
-        
+    
+    def __fullBoard(self):
+        if self.maxTurn == self.currentTurn:
+            return True
+        else:
+            return False
 
 if __name__ == "__main__":
     raise RuntimeError("Error: Must use this class as a dependent!")
