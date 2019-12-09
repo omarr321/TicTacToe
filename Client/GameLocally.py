@@ -200,7 +200,7 @@ class GameLocally():
         raise ValueError("Error: num is not a 1, -1, or 0")
 
     def __getInput(self, player):
-        self.__charPrint("It's is " + str(player) + " turn.")
+        self.__charPrint("It's " + str(player) + " turn.")
         while(True):
             while(True):
                 self.__charPrint("please input a letter: ", endChar="")
