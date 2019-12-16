@@ -2,7 +2,7 @@ import GameBoard
 import copy
 import time
 
-class GameLocally():
+class GameServer():
     def __init__(self, player1, player2, gridSize  = 3):
         self.gameBoard = GameBoard.GameBoard(gridSize)
         self.playerOne = player1

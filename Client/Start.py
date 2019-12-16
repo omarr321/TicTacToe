@@ -1,6 +1,7 @@
 import GameLocally
 import time
 import sys
+from socket import *
 
 def __charPrint(string, endChar = "\n", timePerChar = .04):
     for x in string:
@@ -52,9 +53,57 @@ while(True):
     __clearScreen()
 
     if userIn == 1:
-        __charPrint("Error: online functionality not implemented!")
-        __charPrint("Returning to Main Menu...", endChar="")
-        time.sleep(2)
+        grid = 0
+        #__charPrint("Error: online functionality not implemented!")
+        #__charPrint("Returning to Main Menu...", endChar="")
+        #time.sleep(2)
+        __charPrint("What is your name?")
+        __charPrint(">>>", endChar="")
+        name = input("")
+
+        while(True):
+            __charPrint("Pick a difficulty:")
+            __charPrint("1|Normal  (3x3)")
+            __charPrint("2|Hard    (4x4)")
+            __charPrint("3|Extreme (5x5)")
+            __charPrint(">>>", endChar="")
+            userIn = input("")
+            try:
+                userIn = int(userIn)
+                if(userIn >= 1 and userIn <= 3):
+
+                    grid = userIn + 2
+                    break
+            except ValueError:
+                pass
+            __charPrint("Error: not a vaild input!", endChar="")
+            time.sleep(2)
+            print("\n")
+
+        __charPrint("establishing connection to server...", endChar="")
+        temp = 1
+        connected = False
+        while(True):
+            try:
+                clientSocket = socket(AF_INET, SOCK_STREAM)
+                clientSocket.connect(("", 25535))
+                connected = True
+                break
+            except ConnectionRefusedError:
+                __charPrint("\nTried " + str(temp) + " time(s)...", endChar="")
+                if (temp != 5):
+                    temp = temp + 1
+                else:
+                    __charPrint("\nCan not connect to server")
+                    __charPrint("going back to Main Menu...")
+                    time.sleep(2)
+                    break
+        
+        if connected == True:
+            clientSocket.recv(1024)
+            clientSocket.send(name.encode())
+            clientSocket.recv(1024)
+            clientSocket.send(int(grid).encode())
 
     elif userIn == 2:
         while(True):
