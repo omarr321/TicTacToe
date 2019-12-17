@@ -36,7 +36,7 @@ class Receiver():
         name = client.recv(1024).decode()
 
         client.send("What gridSize?".encode())
-        gridSize = client.recv(1024).decode()
+        gridSize = int(client.recv(1024).decode())
 
         player = [client, addr, name]
 
@@ -46,10 +46,32 @@ class Receiver():
             self.__lobby.addPlayer(player, 4)
         elif gridSize == 5:
             self.__lobby.addPlayer(player, 5)
-        
-        while(self.__lobby.checkForPlayer == True):
-            print(str(player[2]) + "is in the lobby!")
-            time.sleep(5)
+
+        time.sleep(1)
+        temp = 0
+
+        if self.__lobby.checkForPlayer(player) == True:  
+            print(str(player[2]) + " is in the lobby!")
+            
+        while(self.__lobby.checkForPlayer(player) == True):
+            try:
+                if temp == 5:
+                    print(str(player[2]) + " is in the lobby!")
+                    temp = 0
+                client.send("alive?".encode())
+                client.recv(1024)
+                temp = temp + 1
+                time.sleep(1)
+            except ConnectionResetError:
+                print(str(player[2]) + " has left the lobby!")
+
+                if gridSize == 3:
+                    self.__lobby.removePlayer(player, 3)
+                elif gridSize == 4:
+                    self.__lobby.removePlayer(player, 4)
+                elif gridSize == 5:
+                    self.__lobby.removePlayer(player, 5)
+
 
 
         

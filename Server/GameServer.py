@@ -166,7 +166,34 @@ class GameServer():
 
         return None
 
-    def __printGame(self):
+    def __getInput(self, player):
+        self.__charPrint("It's " + str(player) + " turn.")
+        while(True):
+            while(True):
+                self.__charPrint("please input a letter: ", endChar="")
+                inLetter = input("")
+                inLetter = inLetter.lower()
+
+                try:
+                    ord(inLetter)
+                    break
+                except TypeError:
+                    print("Error: Invaild input!")
+
+            if (ord(inLetter) - 96) <= (int(self.gridSize) * int(self.gridSize)) or (ord(inLetter) - 96) >= 1:
+                pos = self.__convertLetter(inLetter)
+                inX = pos[0]
+                inY = pos[1]
+
+                if (int(inX) <= int(self.gridSize) and int(inX) >= 1):
+                    if (int(inY) <= int(self.gridSize) and int(inY) >= 1):
+                        if (not(self.__isFull(inX, inY))):
+                            break
+            self.__charPrint("Error: not a vaild position!")
+
+        return [inX, inY]
+
+    def __getGame(self):
         self.currentLetter = 0
         temp = ""
         self.__clearScreen()
@@ -199,33 +226,6 @@ class GameServer():
         
         raise ValueError("Error: num is not a 1, -1, or 0")
 
-    def __getInput(self, player):
-        self.__charPrint("It's " + str(player) + " turn.")
-        while(True):
-            while(True):
-                self.__charPrint("please input a letter: ", endChar="")
-                inLetter = input("")
-                inLetter = inLetter.lower()
-
-                try:
-                    ord(inLetter)
-                    break
-                except TypeError:
-                    print("Error: Invaild input!")
-
-            if (ord(inLetter) - 96) <= (int(self.gridSize) * int(self.gridSize)) or (ord(inLetter) - 96) >= 1:
-                pos = self.__convertLetter(inLetter)
-                inX = pos[0]
-                inY = pos[1]
-
-                if (int(inX) <= int(self.gridSize) and int(inX) >= 1):
-                    if (int(inY) <= int(self.gridSize) and int(inY) >= 1):
-                        if (not(self.__isFull(inX, inY))):
-                            break
-            self.__charPrint("Error: not a vaild position!")
-
-        return [inX, inY]
-    
     def __convertLetter(self, letter):
         intLetter = ord(letter) - 97
         intLetterX = (intLetter % (int(self.gridSize))) + 1
@@ -239,26 +239,6 @@ class GameServer():
 
         return[intLetterY, intLetterX]
 
-    def __isFull(self, x, y):
-        if str(self.gameBoard.getPos(x, y)) != "0":
-            return True  
-        return False
-    
-    def __fullBoard(self):
-        if self.maxTurn == self.currentTurn:
-            return True
-        else:
-            return False
-
-    def __charPrint(self, string, endChar = "\n", timePerChar = .04):
-        for x in string:
-            print(x, end="", flush=True)
-            time.sleep(timePerChar)
-        print("", end=endChar)
-
-    def __clearScreen(self):
-        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-    
     def __getVisuals(self, row, type):
         visualX = ["__   __", "\ \_/ /", " \   / ", " / _ \ ", "/_/ \_\\"]
         visualO = [" __  _ ", "/  _  \\", "| | | |", "| |_| |", "\_ _ _/"]
@@ -321,6 +301,17 @@ class GameServer():
                 temp = temp + "_________   "
         temp = temp + "\n"
         return temp
+
+    def __isFull(self, x, y):
+        if str(self.gameBoard.getPos(x, y)) != "0":
+            return True  
+        return False
+    
+    def __fullBoard(self):
+        if self.maxTurn == self.currentTurn:
+            return True
+        else:
+            return False
     
 if __name__ == "__main__":
     raise RuntimeError("Error: Must use this class as a dependent!")

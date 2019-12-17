@@ -86,7 +86,7 @@ while(True):
         while(True):
             try:
                 clientSocket = socket(AF_INET, SOCK_STREAM)
-                clientSocket.connect(("", 25535))
+                clientSocket.connect(("10.0.0.18", 25535))
                 connected = True
                 break
             except ConnectionRefusedError:
@@ -100,10 +100,26 @@ while(True):
                     break
         
         if connected == True:
-            clientSocket.recv(1024)
+            print("")
+            message = clientSocket.recv(1024)
+            message = clientSocket.recv(1024)
             clientSocket.send(name.encode())
-            clientSocket.recv(1024)
-            clientSocket.send(int(grid).encode())
+            message = clientSocket.recv(1024)
+            clientSocket.send(str(grid).encode())
+            __clearScreen()
+            __charPrint("Waiting for opponent", endChar="")
+
+            time.sleep(1)
+            while(True):
+                message = clientSocket.recv(1024).decode()
+                if (message == "alive?"):
+                    clientSocket.send("yup".encode())
+                    print(".", end="", flush=True)
+                else:
+                    break
+
+            while(True):
+                print("would be in game!")
 
     elif userIn == 2:
         while(True):
